@@ -1,0 +1,66 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User profile and metadata",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "description": "Firebase Auth UID" },
+        "username": { "type": "string", "description": "Unique username (3-20 chars)" },
+        "email": { "type": "string", "description": "Verified email address" },
+        "phone": { "type": "string", "description": "Optional verified phone number" },
+        "avatarURL": { "type": "string", "description": "Profile picture URL" },
+        "isOnline": { "type": "boolean", "description": "Current online status" },
+        "lastSeen": { "type": "string", "format": "date-time", "description": "Last active timestamp" },
+        "isAdmin": { "type": "boolean", "description": "Admin privileges" },
+        "isBanned": { "type": "boolean", "description": "Ban status" },
+        "banReason": { "type": "string", "description": "Reason for ban" },
+        "banExpires": { "type": "string", "format": "date-time", "description": "Ban expiration timestamp" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Account creation timestamp" },
+        "publicKey": { "type": "string", "description": "Public key for E2E encryption" }
+      },
+      "required": ["uid", "username", "email", "createdAt"]
+    },
+    "Message": {
+      "title": "Message",
+      "description": "Encrypted message between users",
+      "type": "object",
+      "properties": {
+        "messageId": { "type": "string", "description": "Unique message ID" },
+        "chatId": { "type": "string", "description": "Composite ID: userA_userB (sorted UIDs)" },
+        "senderId": { "type": "string", "description": "UID of the sender" },
+        "receiverId": { "type": "string", "description": "UID of the receiver" },
+        "content": { "type": "string", "description": "Encrypted message content" },
+        "contentType": { "type": "string", "enum": ["text", "image", "video", "file", "voice"] },
+        "mediaURL": { "type": "string", "description": "Optional media URL" },
+        "timestamp": { "type": "string", "format": "date-time", "description": "Message sent timestamp" },
+        "isRead": { "type": "boolean", "description": "Read status" },
+        "readAt": { "type": "string", "format": "date-time", "description": "Read timestamp" },
+        "replyTo": { "type": "string", "description": "Optional message ID being replied to" },
+        "reactions": { "type": "object", "description": "Map of userId to emoji" },
+        "isDeleted": { "type": "boolean", "description": "Soft delete status" },
+        "deletedAt": { "type": "string", "format": "date-time", "description": "Deletion timestamp" },
+        "participants": { "type": "array", "items": { "type": "string" }, "description": "List of participant UIDs" }
+      },
+      "required": ["messageId", "chatId", "senderId", "receiverId", "content", "contentType", "timestamp", "participants"]
+    },
+    "Chat": {
+      "title": "Chat",
+      "description": "Chat metadata and summary",
+      "type": "object",
+      "properties": {
+        "chatId": { "type": "string", "description": "Composite ID: userA_userB (sorted UIDs)" },
+        "participants": { "type": "array", "items": { "type": "string" } },
+        "lastMessage": { "type": "string", "description": "Last message snippet (encrypted)" },
+        "lastMessageTimestamp": { "type": "string", "format": "date-time" },
+        "unreadCount": { "type": "object", "description": "Map of userId to unread count" }
+      },
+      "required": ["chatId", "participants"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": { "schema": "User", "description": "User profiles" },
+    "/messages/{messageId}": { "schema": "Message", "description": "Global messages collection" },
+    "/chats/{chatId}": { "schema": "Chat", "description": "Chat metadata" }
+  }
+}

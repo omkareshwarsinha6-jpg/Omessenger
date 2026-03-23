@@ -1,0 +1,9 @@
+{
+  "name": "OmessengeR Pro",
+  "description": "A production-ready, globally accessible secure messaging PWA with E2E encryption, real-time features, and admin control.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone",
+    "geolocation"
+  ]
+}
